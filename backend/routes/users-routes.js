@@ -1,11 +1,22 @@
-// const express = require("express");
+const express = require("express");
+const { check } = require("express-validator");
 
-// const router = express.Router();
+const usersControllers = require("../controllers/users-controllers");
 
-// router.get('/:uid', (req, res, next) => {
-//     const placeId = req.params.pid;
-//     const place = DUMMY_PLACES.find(p => p.id === placeId);
-//     res.json({place});
-// });
+const router = express.Router();
 
-// module.exports = router;
+router.get("/", usersControllers.getUsers);
+
+router.post(
+  "/signup",
+  [
+    check("name").not().isEmpty(),
+    check("email").normalizeEmail().isEmail(),
+    check("password").isLength(6),
+  ],
+  usersControllers.signup
+);
+
+router.post("/login", usersControllers.login);
+
+module.exports = router;
